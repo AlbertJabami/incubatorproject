@@ -1,6 +1,7 @@
-import models
+from interfaces.pantallaPrincipal import pantallaPrincipal
+from interfaces.pantallaLeds import Leds
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, messagebox
 
 class main (Tk):
     
@@ -8,12 +9,13 @@ class main (Tk):
 
     def __init__(self):
         super().__init__()
+        
         self.title("Proyecto Incubadora")
         self.geometry("900x500")
         self.config(bg="blue")   
         self.imagenframe = PhotoImage(file="assets/Fondoprincipal.png")
         self.frame_imagen = Frame(self)
-        self.frame_login = Frame(self)
+        self.frame_login = Frame(self, bg="#ffffff")
 
         self.frame_imagen.place(x=0,y=0,width=450,height=500)
         self.frame_login.place(x=450,y=0,width=450,height=500)
@@ -34,12 +36,15 @@ class main (Tk):
                 text='Iniciar Sesión',
                 foreground="#ffffff",
                 background="#015fb6",
-                font=('Arial',11))
+                font=('Arial',11),
+                border=1,
+                command=self.authUser)
         self.botonRegistro = Button(self.frame_login,
                 text='Registrarme',
                 foreground="#015fb6",
                 background="#ffffff",
                 font=('Arial',11),
+                border=1,
                 command=self.loadForms)
         
         #Widgets del registro
@@ -52,6 +57,7 @@ class main (Tk):
         self.titleContrasenac = Label(self.frame_login, text="Confirmar Contraseña:")
         self.InContrasenac = Entry(self.frame_login, width=40, show="*")
         self.loadForms()
+        
 
     def loadForms(self):
         if self.modoDefault == 'login': 
@@ -66,24 +72,28 @@ class main (Tk):
             self.InContrasenac.pack_forget()
             self.botonRegistro.config(command=self.loadForms)
             self.modoDefault = 'registro'
-
         elif self.modoDefault == 'registro':
             # self.titleCorreo.place_forget()
             # self.InCorreo.pack_forget()
             # self.titleContrasena.place_forget()
             # self.InContrasena.pack_forget()
             self.botonLogin.place_forget()
-
             self.titleContrasenac.place(y=270, x=100)  
             self.InContrasenac.pack(pady=50)
-            self.botonRegistro.config(command=self.hola)
+            self.botonRegistro.config(command=self.authUser)
             self.botonRegistro.place(y=400, x=70)
             self.botonRegresar.place(y=400, x=200)
             self.modoDefault = 'login'
+            
 
-    def hola(self):
-        print("Hola amigos")
-
-
+    def authUser(self):
+        if self.modoDefault == 'registro':
+            print('Vamos a iniciar sesion')
+            messagebox.showinfo(title='Proyecto Incubadora', message='Has iniciado sesion correctamente')
+            self.destroy()
+            succes= pantallaPrincipal()
+            succes.mainloop()
+        elif self.modoDefault == 'login':
+            print('Vamos a crear una cuenta')
 
 app = main().mainloop()
